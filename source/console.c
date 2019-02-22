@@ -4,7 +4,7 @@
 // be done in console commands.
 
 #include <string.h>  // for NULL
-#include <stdlib.h>  // for atoi and itoa (though this code implement a version of that)
+#include <stdlib.h>  // for atoi and itoa (though this code implements a version of that)
 #include <stdbool.h>
 #include "console.h"
 #include "consoleIo.h"
