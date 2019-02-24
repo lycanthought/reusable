@@ -39,13 +39,11 @@ static uint32_t ConsoleCommandMatch(const char* name, const char *buffer)
 {
 	uint32_t i = 0u;
 	uint32_t result = 0u; // match
-
-	if ( buffer[i] == name [i] )
+	if ( buffer[i] == name [i] ) // not sure you need this original comparison??
 	{
 		result = 1u;
 		i++;
 	}
-
 	while ( ( 1u == result ) &&
 		( i < CONSOLE_COMMAND_MAX_COMMAND_LENGTH )  &&
 		( buffer[i] != PARAMETER_SEPARATER ) &&
@@ -59,7 +57,6 @@ static uint32_t ConsoleCommandMatch(const char* name, const char *buffer)
 		}
 		i++;
 	}
-
 	return result;
 }
 
@@ -91,7 +88,6 @@ static int32_t ConsoleCommandEndline(const char receiveBuffer[], const  uint32_t
 {
 	uint32_t i = 0;
 	int32_t result = NOT_FOUND; // if no endline is found, then return -1 (NOT_FOUND)
-
 	while ( ( CR_CHAR != receiveBuffer[i])  && (LF_CHAR != receiveBuffer[i])
 			&& ( i < filledLength ) )
 	{
@@ -109,13 +105,11 @@ static int32_t ConsoleCommandEndline(const char receiveBuffer[], const  uint32_t
 void ConsoleInit(void)
 {
 	uint32_t i;
-
 	ConsoleIoInit();
 	ConsoleIoSendString("Welcome to the Consolinator, your gateway to testing code and hardware.");	
 	ConsoleIoSendString(STR_ENDLINE);
 	ConsoleIoSendString(CONSOLE_PROMPT);
 	mReceivedSoFar = 0u;
-
 	for ( i = 0u ; i < CONSOLE_COMMAND_MAX_LENGTH ; i++)
 	{
 		mReceiveBuffer[i] = NULL_CHAR;
