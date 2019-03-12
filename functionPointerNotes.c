@@ -1,15 +1,9 @@
 // from: https://www.youtube.com/watch?v=g1N_ttH0FQE
-// right left rule:
-// look right then left then go outside parentheses and do the same again
 
-so (*foo) foo is a pointer
-
-// (*foo)(int); foo is a pointer to a function that takes an int
-// int *(*foo)(int); foo is a pointer to a function that takes an int and returns a pointer to an int
-
-
-// we can typedef the function pointer for a function with specific arguments and returns:
+// we can typedef a function pointer for a function with specific arguments and return type:
+// (the arguments do not need names)
 typedef uint32_t (*command_ptr)(uint32_t);
+
 // then define some functions with the same arguments and return type:
 uint32_t setSpeed(uint32_t speed);
 {
@@ -17,70 +11,31 @@ uint32_t setSpeed(uint32_t speed);
 }
 uint32_t drawLine(uint32_t length);
 {
-	drawALine(length);
+	drawLine(length);
 }
 
 // then set a metafunction to call the appropriate function:
-int doCommand(command_ptr command, uint32_t commandValue)
+uint32_t doCommand(command_ptr command, uint32_t value)
 {
-	return command(commandValue);
+	return command(value);
 }
 
 // then call the metafunction with appropriate arguments
-
 uint32_t result = doCommand(setSpeed, commandValue);
 
-// then set a metafunction
-
-
-//
-//
-// SIMPLEST FORM
-
-uint32_t setSpeed(uint32_t commandValue;
-{
-	outputSpeed = commandValue;
-	return 0;
-}
-
-uint32_t drawLine(uint32_t commandValue);
-{
-	drawALine(commandValue);
-	return 0;
-}
-
-uint32_t (*command)(uint32_t) = setSpeed; // needs to be used in full every call...
-
-command(currentCommandValue); // calls setSpeed 
-
-//with typedef:
-
-typedef uint32_t (*command_function)(uint32_t); // use once
-
-command_function command = drawLine; 
-
-command(currentCommandValue); // calls drawLine
-
-// we can also pass the funtion pointer to another function:
-
-void doCommand(command_function function, uint32_t value)
-{
-	function(value);
-}
-
 // and most importantly create a function map:
-
-
+// start with a typdef'd function pointer
 typedef uint32_t (*command_function)(uint32_t);
 
+// then creat a typedef'd struct for the map containing a name string and a function to call
 typedef struct
 {
 	char*            commandName;
 	command_function commandFunction;
-}   command_type;
+}
+command_type;
 
-#define NUM_COMMANDS 2
-#define INVALID_VALUE 0xFFFFFFFF
+// then create a filled (const) array of these structs
 const command_type commandLibrary[]
 {
 	{"SET_SPEED", setSpeed},
@@ -88,6 +43,9 @@ const command_type commandLibrary[]
 	{"", NULL},
 };
 
+// then a function to map the name to the function:
+// (takes a string as an argument and returns a function pointer)
+#define NUM_COMMANDS 3 // needs to relate to the commandLibrary
 command_function getCommand(char *s)
 {
 	for(int i=0; i < NUM_COMMANDS; i++)
@@ -100,7 +58,9 @@ command_function getCommand(char *s)
 	return NULL;
 }
 
-uint8_t doCommand(char* buffer)
+// then a function to call the appropriate function
+#define INVALID_VALUE 0xFFFFFFFF
+uint8_t doCommand(char* buffer) // the buffer contains command name and value in ascii
 {
 	command_function command = getCommand(buffer);
 	uint32_t value = getValue(buffer); // need to write getValue()
